@@ -45,7 +45,11 @@ function testStackForMatch(stack, method, path) {
 
         // It's only a match if the stack layer is a route.
         if (route) {
-            return route.methods[method] && layer.match(path);
+            return (
+                // express automatically calls get() for HEAD requests if head()
+                // is not called before get()
+                route.methods[method] || (method === 'head' && route.methods['get'])
+            ) && layer.match(path);
         }
 
         if (subStack) {

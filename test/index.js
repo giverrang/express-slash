@@ -22,6 +22,7 @@ describe('App', function () {
         app.put('/slash/', respond);
         app.post('/slash/', respond);
         app.get('/noslash', respond);
+        app.post('/post-only-slash/', respond);
     });
 
     it('adds slashes when they are needed', function (done) {
@@ -38,7 +39,14 @@ describe('App', function () {
             .expect(301, done);
     });
 
-    it('only works with GET requests', function (done) {
+    it("works for HEAD with only GET route", function (done) {
+        request(app)
+            .head('/slash')
+            .expect('location', '/slash/')
+            .expect(301, done);
+    });
+
+    it('only works with GET or HEAD requests', function (done) {
         request(app).put('/slash').expect(404, function () {
             request(app).post('/slash').expect(404, done);
         });
@@ -46,10 +54,9 @@ describe('App', function () {
 
     it("doesn't do anything if the requested method doesn't have any routes", function (done) {
         request(app)
-            .head('/slash')
+            .get('/post-only-slash')
             .expect(404, done);
     });
-
 
     it("doesn't do anything if the requested route is correct", function (done) {
         request(app)
@@ -80,6 +87,8 @@ describe('Router', function () {
         router.put('/slash/', respond);
         router.post('/slash/', respond);
         router.get('/noslash', respond);
+        router.post('/post-only-slash/', respond);
+
     });
 
     it('adds slashes when they are needed', function (done) {
@@ -96,7 +105,14 @@ describe('Router', function () {
             .expect(301, done);
     });
 
-    it('only works with GET requests', function (done) {
+    it("works for HEAD with only GET route", function (done) {
+        request(app)
+            .head('/slash')
+            .expect('location', '/slash/')
+            .expect(301, done);
+    });
+
+    it('only works with GET or HEAD requests', function (done) {
         request(app).put('/slash').expect(404, function () {
             request(app).post('/slash').expect(404, done);
         });
@@ -104,7 +120,7 @@ describe('Router', function () {
 
     it("doesn't do anything if the requested method doesn't have any routes", function (done) {
         request(app)
-            .head('/slash')
+            .head('/post-only-slash')
             .expect(404, done);
     });
 
@@ -135,6 +151,7 @@ describe('Nested Router', function () {
         router.put('/slash/', respond);
         router.post('/slash/', respond);
         router.get('/noslash', respond);
+        router.post('/post-only-slash/', respond);
 
         app.use('/', router);
         app.use('/nested/', router);
@@ -156,7 +173,14 @@ describe('Nested Router', function () {
             .expect(301, done);
     });
 
-    it('only works with GET requests', function (done) {
+    it("works for HEAD with only GET route", function (done) {
+        request(app)
+            .head('/slash')
+            .expect('location', '/slash/')
+            .expect(301, done);
+    });
+
+    it('only works with GET or HEAD requests', function (done) {
         request(app).put('/slash').expect(404, function () {
             request(app).post('/slash').expect(404, done);
         });
@@ -164,7 +188,7 @@ describe('Nested Router', function () {
 
     it("doesn't do anything if the requested method doesn't have any routes", function (done) {
         request(app)
-            .head('/slash')
+            .head('/post-only-slash')
             .expect(404, done);
     });
 
@@ -189,7 +213,14 @@ describe('Nested Router', function () {
             .expect(301, done);
     });
 
-    it('only works with GET requests (for nested routes)', function (done) {
+    it("works for HEAD with only GET route (for nested routes)", function (done) {
+        request(app)
+            .head('/nested/slash')
+            .expect('location', '/nested/slash/')
+            .expect(301, done);
+    });
+
+    it('only works with GET or HEAD requests (for nested routes)', function (done) {
         request(app).put('/nested/slash').expect(404, function () {
             request(app).post('/nested/slash').expect(404, done);
         });
@@ -197,7 +228,7 @@ describe('Nested Router', function () {
 
     it("doesn't do anything if the requested method doesn't have any routes (for nested routes)", function (done) {
         request(app)
-            .head('/nested/slash')
+            .head('/nested/post-only-slash')
             .expect(404, done);
     });
 
