@@ -28,7 +28,7 @@ function expressSlash(statusCode) {
         pathname = hasSlash ? pathname.slice(0, -1) : (pathname + '/');
 
         // Look for matching route.
-        var match = testStackForMatch((req.app.router || req.app._router).stack, method, pathname);
+        var match = testStackForMatch((req.app._router || req.app.router).stack, method, pathname);
 
         if (match) {
             res.redirect(statusCode, pathname + search);
